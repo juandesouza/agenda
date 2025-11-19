@@ -42,4 +42,16 @@ jobs:
         secrets: |
           NETLIFY_AUTH_TOKEN
           NETLIFY_SITE_ID
+      if: ${{ secrets.NETLIFY_AUTH_TOKEN != '' && secrets.NETLIFY_SITE_ID != '' }}
+    
+    - name: Skip deployment (secrets not configured)
+      if: ${{ secrets.NETLIFY_AUTH_TOKEN == '' || secrets.NETLIFY_SITE_ID == '' }}
+      run: |
+        echo "⚠️  Netlify secrets not configured yet."
+        echo "📝 After connecting Netlify to GitHub, add these secrets:"
+        echo "   - NETLIFY_AUTH_TOKEN"
+        echo "   - NETLIFY_SITE_ID"
+        echo "   - NEXT_PUBLIC_API_URL"
+        echo ""
+        echo "See GITHUB_ACTIONS_QUICKSTART.md for instructions."
 
