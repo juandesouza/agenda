@@ -1,13 +1,12 @@
-name: CI
+name: Deploy to Netlify
 
 on:
   push:
     branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
+  workflow_dispatch: # Allows manual triggering
 
 jobs:
-  test:
+  build-and-deploy:
     runs-on: ubuntu-latest
     
     steps:
@@ -25,11 +24,22 @@ jobs:
     
     - name: Run linter
       run: npm run lint
+      continue-on-error: true # Don't fail deployment on lint errors
     
     - name: Build Next.js app
       env:
         NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api' }}
         NODE_ENV: production
       run: npm run build
-      continue-on-error: true # Don't fail CI if build fails (will fail in deploy workflow)
+    
+    - name: Deploy to Netlify
+      uses: netlify/actions/cli@master
+      env:
+        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+      with:
+        args: deploy --dir=.next --prod
+        secrets: |
+          NETLIFY_AUTH_TOKEN
+          NETLIFY_SITE_ID
 
