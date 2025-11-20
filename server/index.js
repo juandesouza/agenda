@@ -47,13 +47,15 @@ const PORT = process.env.PORT || 5000;
 const isProduction = process.env.NODE_ENV === 'production';
 
 async function connectToDatabase() {
-  const mongoUri = process.env.MONGODB_URI;
+  // Railway provides MongoDB via MONGO_URL or DATABASE_URL, fallback to MONGODB_URI
+  const mongoUri = process.env.MONGO_URL || process.env.DATABASE_URL || process.env.MONGODB_URI;
 
-  // In production, MONGODB_URI is required
+  // In production, MongoDB URI is required
   if (isProduction && !mongoUri) {
     throw new Error(
-      'MONGODB_URI environment variable is required in production. ' +
-      'Please ensure your database service is connected (Railway will provide this automatically).'
+      'MongoDB connection string is required in production. ' +
+      'Railway should provide MONGO_URL, DATABASE_URL, or MONGODB_URI. ' +
+      'Please ensure your MongoDB service is connected to your backend service in Railway.'
     );
   }
 
