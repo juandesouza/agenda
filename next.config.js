@@ -1,12 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
-  i18n: {
-    locales: ['en', 'es', 'pt', 'fr', 'it'],
-    defaultLocale: 'en',
-    localeDetection: true,
-  },
+  output: 'standalone',
+  // Next.js App Router manages routing without the legacy `i18n` block.
+  // All translations are handled client-side via react-i18next, so keeping
+  // this configuration would break production builds.
   async headers() {
     return [
       {
