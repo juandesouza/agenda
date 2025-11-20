@@ -48,7 +48,18 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 async function connectToDatabase() {
   // Railway provides MongoDB via MONGO_URL or DATABASE_URL, fallback to MONGODB_URI
-  const mongoUri = process.env.MONGO_URL || process.env.DATABASE_URL || process.env.MONGODB_URI;
+  // Also check for Railway's service reference format
+  const mongoUri = process.env.MONGO_URL || 
+                   process.env.DATABASE_URL || 
+                   process.env.MONGODB_URI ||
+                   process.env.MONGODB_URL;
+  
+  // Debug: Log available env vars (without sensitive data)
+  if (isProduction && !mongoUri) {
+    console.log('🔍 Available environment variables:', Object.keys(process.env).filter(k => 
+      k.includes('MONGO') || k.includes('DATABASE') || k.includes('DB')
+    ).join(', ') || 'none found');
+  }
 
   // In production, MongoDB URI is required
   if (isProduction && !mongoUri) {
