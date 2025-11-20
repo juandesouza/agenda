@@ -53,7 +53,7 @@ async function connectToDatabase() {
   if (isProduction && !mongoUri) {
     throw new Error(
       'MONGODB_URI environment variable is required in production. ' +
-      'Please set your MongoDB Atlas connection string.'
+      'Please ensure your database service is connected (Railway will provide this automatically).'
     );
   }
 
@@ -70,15 +70,15 @@ async function connectToDatabase() {
         serverSelectionTimeoutMS: 5000,
         socketTimeoutMS: 45000,
       });
-      console.log('✅ Connected to MongoDB Atlas');
+      console.log('✅ Connected to MongoDB');
       return null;
     } catch (error) {
-      console.error('❌ MongoDB Atlas connection error:', error.message);
+      console.error('❌ MongoDB connection error:', error.message);
 
       if (isProduction) {
         throw new Error(
-          `Failed to connect to MongoDB Atlas: ${error.message}. ` +
-          'Please check your MONGODB_URI and ensure your IP is whitelisted.'
+          `Failed to connect to MongoDB: ${error.message}. ` +
+          'Please check your MONGODB_URI environment variable.'
         );
       }
 
