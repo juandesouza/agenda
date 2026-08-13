@@ -9,7 +9,9 @@ const app = express();
 // Middleware
 // Configure CORS for production (Netlify) and development
 const allowedOrigins = process.env.NODE_ENV === 'production'
-  ? (process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : [])
+  ? (process.env.FRONTEND_URL
+      ? [process.env.FRONTEND_URL.replace(/\/$/, '')]
+      : [])
   : ['http://localhost:3000'];
 
 app.use(cors({

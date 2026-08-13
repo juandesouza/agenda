@@ -14,6 +14,10 @@ export function PWARegister() {
     const registerServiceWorker = async () => {
       try {
         const registration = await navigator.serviceWorker.register('/sw.js');
+        await registration.update();
+        if (registration.waiting) {
+          registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+        }
         console.log('Service Worker registered:', registration);
       } catch (error) {
         console.error('Service Worker registration failed:', error);
